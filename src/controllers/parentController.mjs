@@ -40,6 +40,8 @@ export const verifyParentNumber = async (req, res) => {
                 s.student_parent_surname, 
                 s.student_parent_number, 
                 sc.school_name,
+                sc.school_email,
+                sc.school_website,
                 ARRAY(
                     SELECT jsonb_build_object(
                         'feetype', f.fee_type, 
@@ -68,6 +70,7 @@ export const verifyParentNumber = async (req, res) => {
         res.status(500).json({ message: "Internal server error." });
     }
 };
+
 
 
 export const sendParentMessage = async (req, res) => {
