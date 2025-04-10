@@ -40,7 +40,7 @@ export const initializePaymentMobile = async (req, res) => {
                 email,
                 amount: amount * 100, // Convert to kobo
                 currency: "GHS",
-                callback_url: "http://localhost:5173/paymentCallback",
+                callback_url: "https://myward.tech/paymentCallback",
             },
             {
                 headers: {

@@ -53,6 +53,8 @@ export const addStudent = async (req, res) => {
 
         const classData = classResult.rows[0];
 
+        console.log('ClassData: ', classData);
+
         // ✅ Assign level based on className
         const level = classLevelMap[studentClass] || 0; // Default to 0 if not found
 
@@ -62,12 +64,16 @@ export const addStudent = async (req, res) => {
             [classData.id]
         );
 
+        console.log('FeeResult: ', feeResult.rows);
+
         const classFees = feeResult.rows.map(fee => ({
             feeType: fee.fee_type,
             amount: fee.amount,
             status: fee.status,
             dueDate: fee.due_date,
         }));
+
+        console.log('classFees: ', classFees);
 
         // ✅ Insert new student
         const studentResult = await client.query(
@@ -91,11 +97,13 @@ export const addStudent = async (req, res) => {
                 studentParentSurname,
                 studentParentNumber,
                 level,
-                classFees.reduce((acc, fee) => acc + fee.amount, 0), // Initial balance based on total fees
+                classFees.reduce((acc, fee) => acc + (parseFloat(fee.amount) || 0), 0), // Initial balance based on total fees
                 new Date(),
                 new Date()
             ]
         );
+
+        console.log('studentResult ', studentResult.rows[0])
 
         // ✅ Insert class fees (if applicable)
         const studentId = studentResult.rows[0].id;
