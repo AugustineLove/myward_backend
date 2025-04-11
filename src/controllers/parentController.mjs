@@ -38,10 +38,12 @@ export const verifyParentNumber = async (req, res) => {
                 s.student_address, 
                 s.student_parent_first_name, 
                 s.student_parent_surname, 
-                s.student_parent_number, 
+                s.student_parent_number,
+                s.student_parent_email, 
                 sc.school_name,
                 sc.school_email,
                 sc.school_website,
+                sc.subaccount_code,
                 ARRAY(
                     SELECT jsonb_build_object(
                         'feetype', f.fee_type, 
@@ -70,6 +72,7 @@ export const verifyParentNumber = async (req, res) => {
         res.status(500).json({ message: "Internal server error." });
     }
 };
+
 
 
 
@@ -103,3 +106,27 @@ export const sendParentMessage = async (req, res) => {
 });
 
 }
+
+export const addParentEmailToStudents = async (req, res) => {
+    try {
+        const { parentEmail, studentIds } = req.body;
+
+        if (!parentEmail || !studentIds || !Array.isArray(studentIds)) {
+            return res.status(400).json({ message: "Parent email and student IDs are required." });
+        }
+
+        const query = `
+            UPDATE students
+            SET student_parent_email = $1
+            WHERE id = ANY($2::int[])
+        `;
+
+        await client.query(query, [parentEmail, studentIds]);
+
+        res.status(200).json({ message: "Parent email successfully added to student records." });
+
+    } catch (error) {
+        console.error("Error updating parent email:", error);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};
