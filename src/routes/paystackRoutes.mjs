@@ -1,7 +1,5 @@
 
 import { Router } from "express";
-const bodyParser = require('body-parser');
-const crypto = require('crypto');
 import https from 'https'
 import { createSubAccount, getAccountHolderName, getBanks, initializePayment, paystackWebhook, verifyPayment } from "../controllers/paystackController.mjs";
 const paystackRoutes = Router();
