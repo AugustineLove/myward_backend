@@ -37,7 +37,8 @@ export const verifyParentNumber = async (req, res) => {
                 s.student_class_name, 
                 s.student_address, 
                 s.student_parent_first_name, 
-                s.student_parent_surname, 
+                s.student_parent_surname,
+                s.student_other_names,
                 s.student_parent_number,
                 s.student_parent_email, 
                 sc.school_name,
@@ -118,7 +119,7 @@ export const addParentEmailToStudents = async (req, res) => {
         const query = `
             UPDATE students
             SET student_parent_email = $1
-            WHERE id = ANY($2::int[])
+            WHERE id = ANY($2::uuid[])
         `;
 
         await client.query(query, [parentEmail, studentIds]);

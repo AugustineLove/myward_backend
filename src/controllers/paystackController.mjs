@@ -1,6 +1,7 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import https from 'https'
+import client from "../db.mjs";
 
 dotenv.config();
 
@@ -234,3 +235,74 @@ export const getBanks = (req, res) => {
         return res.status(500).json({ error: 'Error communicating with Paystack API' });
       }).end();
     };
+
+
+// Webhook endpoint
+export const paystackWebhook = async (req, res) => {
+  const hash = crypto
+    .createHmac('sha512', PAYSTACK_SECRET)
+    .update(req.rawBody)
+    .digest('hex');
+
+  const signature = req.headers['x-paystack-signature'];
+
+  if (hash !== signature) {
+    return res.status(401).send('Invalid signature');
+  }
+
+  const event = req.body;
+  console.log('✅ Paystack Event Received:', event.event);
+
+  if (event.event === 'charge.success') {
+    const data = event.data;
+    const {
+      amount,
+      currency,
+      customer,
+      reference,
+      paid_at,
+      subaccount,
+      status,
+      metadata,
+    } = data;
+
+    try {
+      await client.query(
+        `
+        INSERT INTO payments (
+          amount, currency, email, reference, status,
+          subaccount_code, paid_at,
+          student_id, student_name, parent_name, fee_type, raw_metadata, raw_data
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      `,
+        [
+          amount / 100,
+          currency,
+          customer?.email || null,
+          reference,
+          status,
+          subaccount || null,
+          paid_at,
+          metadata?.studentId || null,
+          metadata?.studentName || null,
+          metadata?.parentName || null,
+          metadata?.feeType || null,
+          metadata || null,
+          data,
+        ]
+      );
+
+      console.log(`💾 Payment saved for student: ${metadata?.studentName}`);
+    } catch (err) {
+      console.error('❌ Error saving payment:', err.message);
+    }
+  } else if (event.event === 'transfer.success') {
+    console.log('💸 Transfer success:', event.data);
+  } else if (event.event === 'transfer.failed') {
+    console.error('🚫 Transfer failed:', event.data);
+  } else {
+    console.log('⚠️ Unhandled event:', event.event);
+  }
+
+  res.sendStatus(200);
+};

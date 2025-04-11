@@ -1,8 +1,9 @@
 
 import { Router } from "express";
-
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
 import https from 'https'
-import { createSubAccount, getAccountHolderName, getBanks, initializePayment, verifyPayment } from "../controllers/paystackController.mjs";
+import { createSubAccount, getAccountHolderName, getBanks, initializePayment, paystackWebhook, verifyPayment } from "../controllers/paystackController.mjs";
 const paystackRoutes = Router();
 
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET;
@@ -12,6 +13,7 @@ paystackRoutes.get('/verify/:reference', verifyPayment)
 paystackRoutes.post('/createSubAccount', createSubAccount)
 paystackRoutes.get('/getBanks', getBanks)
 paystackRoutes.get('/getAccountHolderName', getAccountHolderName)
+paystackRoutes.post('/webhook', paystackWebhook)
 
 paystackRoutes.get('/', (req, res) => {
 
