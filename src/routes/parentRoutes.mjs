@@ -16,7 +16,7 @@ const parentRoutes = Router();
 parentRoutes.get('/:parentNumber', getAllChildren)
 parentRoutes.post('/verify', verifyParentNumber)
 parentRoutes.post('/sendMessage', sendParentMessage)
-parentRoutes.post('/addEmail', addParentEmailToStudents)
+parentRoutes.put('/addEmail', addParentEmailToStudents)
 
 
 export default parentRoutes;
