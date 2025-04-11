@@ -7,7 +7,7 @@ import client from "../db.mjs";
 
 
 export const addSchool = async (req, res) => {
-  const { schoolName, schoolAddress, schoolPhone, schoolEmail, schoolWebsite, schoolPassword, paymentMethod, bankName, bankAccountNumber, subAccountCode, mobileMoneyProvider, mobileMoneyNumber } = req.body;
+  const { schoolName, schoolAddress, schoolPhone, schoolEmail, schoolWebsite, schoolPassword, paymentMethod, bankName, bankAccountNumber, subAccountCode, mobileMoneyProvider, mobileMoneyNumber, accountName } = req.body;
 
   console.log("Incoming body: " + JSON.stringify(req.body, null, 2)); // ✅ Pretty printed
 
