@@ -9,29 +9,38 @@ const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET;
 
 // Initialize a payment
 export const initializePayment = async (req, res) => {
-    try {
-        const { email, amount } = req.body;
-        const response = await axios.post(
-            "https://api.paystack.co/transaction/initialize",
-            {
-                email,
-                amount: amount * 100, // Convert to kobo
-                currency: "GHS",
-                callback_url: "https://myward.tech/paymentCallback",
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${PAYSTACK_SECRET}`,
-                    "Content-Type": "application/json",
-                },
-            }
-        );
-        res.json(response.data);
-    } catch (error) {
-        console.error("Paystack Error:", error.response?.data || error.message);
-        res.status(500).json({ error: "Payment initialization failed" });
-    }
+  try {
+      const { email, amount, subaccount, metadata } = req.body;
+
+      const response = await axios.post(
+          "https://api.paystack.co/transaction/initialize",
+          {
+              email,
+              amount: amount * 100, // in kobo/pesewas
+              currency: "GHS",
+              callback_url: "https://myward.tech/paymentCallback",
+
+              // ➕ Include subaccount if provided
+              ...(subaccount && { subaccount }),
+
+              // ➕ Add optional metadata (e.g., student info)
+              ...(metadata && { metadata }),
+          },
+          {
+              headers: {
+                  Authorization: `Bearer ${PAYSTACK_SECRET}`,
+                  "Content-Type": "application/json",
+              },
+          }
+      );
+
+      res.json(response.data);
+  } catch (error) {
+      console.error("Paystack Error:", error.response?.data || error.message);
+      res.status(500).json({ error: "Payment initialization failed" });
+  }
 };
+
 export const initializePaymentMobile = async (req, res) => {
     try {
         const { email, amount } = req.body;
