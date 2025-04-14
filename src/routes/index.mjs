@@ -6,6 +6,7 @@ import otpRoutes from "./otpRoutes.mjs";
 import transactionRoutes from "./transactionRoutes.mjs";
 import parentRoutes from "./parentRoutes.mjs";
 import paystackRoutes from "./paystackRoutes.mjs";
+import helpRoutes from "./helpRoutes.mjs";
 // import transactionRoutes from "./transactionRoutes.mjs";
 // import paystackRoutes from "./paystackRoutes.mjs";
 const router = Router();
@@ -17,5 +18,6 @@ router.use('/api/parents', parentRoutes);
 router.use('/api/transactions', transactionRoutes)
 router.use('/api/otp', otpRoutes);
 router.use('/api/paystack', paystackRoutes)
+router.use('/api/contact', helpRoutes)
 
 export default router;
