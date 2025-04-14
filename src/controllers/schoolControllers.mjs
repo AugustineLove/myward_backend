@@ -330,7 +330,7 @@ export const getFeeTypesForSchool = async (req, res) => {
     console.error("Error fetching fee types:", error);
     res.status(500).json({ message: "Internal server error" });
   } finally {
-   /*  client.release(); */ // Release the client back to the pool
+   /*  client.release(); */ // Release the client back to the client
   }
 };
 
@@ -396,3 +396,29 @@ export const getAllSchools = async (req, res) => {
       res.status(500).json({ message: "Server error" });
     }
   };
+
+
+// PUT /schools/update-subscription/:id
+export const upgradeSubscription = async (req, res) => {
+  const schoolId = req.params.id;
+  const { registration_expiration_date } = req.body;
+
+  try {
+    const result = await client.query(
+      `UPDATE schools
+       SET registration_expiration_date = $1
+       WHERE id = $2
+       RETURNING *`,
+      [registration_expiration_date, schoolId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "School not found" });
+    }
+
+    res.status(200).json({ message: "Subscription updated", data: result.rows[0] });
+  } catch (error) {
+    console.error("Error updating subscription:", error);
+    res.status(500).json({ message: "Failed to update subscription" });
+  }
+};

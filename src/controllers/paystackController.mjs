@@ -10,7 +10,7 @@ const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET;
 // Initialize a payment
 export const initializePayment = async (req, res) => {
   try {
-      const { email, amount, subaccount, metadata } = req.body;
+      const { email, amount, subaccount, metadata, callBack } = req.body;
 
       const response = await axios.post(
           "https://api.paystack.co/transaction/initialize",
@@ -18,7 +18,7 @@ export const initializePayment = async (req, res) => {
               email,
               amount: amount * 100, // in kobo/pesewas
               currency: "GHS",
-              callback_url: "https://myward.tech/paymentCallback",
+              callback_url: callBack,
 
               // ➕ Include subaccount if provided
               ...(subaccount && { subaccount }),
