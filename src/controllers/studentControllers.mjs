@@ -318,7 +318,7 @@ export const getAllStudents = async (req, res) => {
         const students = studentsResult.rows;
 
         if (students.length === 0) {
-            return res.status(404).json({ message: "No students found for this school" });
+            return res.status(201).json({ message: "No students found for this school" });
         }
 
         res.status(200).json(students);
