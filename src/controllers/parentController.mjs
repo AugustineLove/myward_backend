@@ -41,6 +41,7 @@ export const verifyParentNumber = async (req, res) => {
                 s.student_other_names,
                 s.student_parent_number,
                 s.student_parent_email, 
+                s.schoold_id,
                 sc.school_name,
                 sc.school_email,
                 sc.school_website,
