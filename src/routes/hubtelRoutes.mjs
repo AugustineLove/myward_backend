@@ -3,7 +3,7 @@ import webhoookUrl from "../controllers/hubtelController.mjs";
 
 
 
-const hubtelRoutes = Router()
+export const hubtelRoutes = Router()
 
 
 hubtelRoutes.post('/webhook/hubtel-payment', webhoookUrl)
