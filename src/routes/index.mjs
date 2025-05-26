@@ -18,6 +18,6 @@ router.use('/api/transactions', transactionRoutes)
 router.use('/api/otp', otpRoutes);
 router.use('/api/paystack', paystackRoutes)
 router.use('/api/contact', helpRoutes)
-router.use('/api/payment', hubtelRoutes)
+router.use('/api/hubtel', hubtelRoutes)
 
 export default router;

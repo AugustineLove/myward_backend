@@ -422,3 +422,62 @@ export const upgradeSubscription = async (req, res) => {
     res.status(500).json({ message: "Failed to update subscription" });
   }
 };
+
+export const getSchoolParents = async (req, res) => {
+  const { schoolId } = req.params;
+
+  try {
+    const result = await client.query(
+      'SELECT id, student_parent_surname, student_parent_first_name, student_parent_number FROM students WHERE school_id = $1 ORDER BY student_parent_surname ASC',
+      [schoolId]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching parents:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+export const activateBulkSms = async (req, res) => {
+  const { schoolId } = req.params;
+
+  if (!schoolId) {
+    return res.status(400).json({ error: 'schoolId is required' });
+  }
+
+  try {
+    const result = await client.query(
+      `UPDATE schools
+       SET sms_units = COALESCE(sms_units, 10)
+       WHERE id = $1
+       RETURNING id, sms_units`,
+      [schoolId]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'School not found' });
+    }
+
+    return res.status(200).json({ message: 'Bulk SMS activated', school: result.rows[0] });
+  } catch (err) {
+    console.error('Error activating bulk SMS:', err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+export const getSmsUnits = async (req, res) => {
+  const { schoolId } = req.params;
+
+  try {
+    const result = await client.query(
+      `SELECT sms_units
+       FROM schools
+       WHERE id = $1`,
+      [schoolId]
+    );
+
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching SMS units:', err);
+}}
