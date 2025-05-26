@@ -92,7 +92,7 @@ export const hubtelCheckout = async (req, res) => {
       { 
         totalAmount: amount,
         description: description,
-        callbackUrl: 'https://webhook.site/8b4bbd0a-5f98-4b3d-abbe-b9b49767f7d5', // Replace with your real webhook
+        callbackUrl: `https://sfmyward.space/api/payment/webhook/hubtel-payment`, // Replace with your real webhook
         returnUrl: `http://localhost:5173/dashboard/confirmSmsPayment?clientReference=${reference}`,
         cancellationUrl: 'http://localhost:5173/dashboard/bulkMessage',
         merchantAccountNumber: '2029967',
